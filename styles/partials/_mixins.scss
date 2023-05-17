@@ -10,6 +10,12 @@
   }
 }
 
+@mixin uhd-query {
+  @media screen and (min-width: 2000px) {
+    @content;
+  }
+}
+
 @mixin font($size, $height, $weight) {
   font-size: $size;
   line-height: $height;
