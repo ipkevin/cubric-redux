@@ -10,14 +10,20 @@
   }
 }
 
-@mixin uhd-query {
-  @media screen and (min-width: 2000px) {
+@mixin short-height-query {
+  @media screen and (max-height: 500px) {
     @content;
   }
 }
 
-@mixin font($size, $height, $weight) {
-  font-size: $size;
-  line-height: $height;
-  font-weight: $weight;
+// @mixin font($size, $height, $weight) {
+//   font-size: $size;
+//   line-height: $height;
+//   font-weight: $weight;
+// }
+
+@mixin font-standard {
+  color: white;
+  font-weight: bold;
+  font-size: .75rem;
 }

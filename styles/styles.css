@@ -70,11 +70,19 @@ ul {
 .splash__wrapper {
   flex: 1 1 auto;
   background-color: #711AA5;
-  background-image: url("../assets/Cubric_LoadingScreen_PurpleBottom_opt.jpg");
+  background-image: url("../assets/Cubric_LoadingScreen_PurpleBottom_opt_narrow.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: top center;
   position: relative;
+}
+@media screen and (min-width: 768px) {
+  .splash__wrapper {
+    background-image: url("../assets/Cubric_LoadingScreen_PurpleBottom_opt.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: top center;
+  }
 }
 .splash__content {
   position: absolute;
@@ -94,15 +102,80 @@ ul {
   align-items: center;
   gap: 0.5rem;
 }
+.splash__content-lower {
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+}
 .splash__logo {
   width: 13.125rem;
 }
-@media screen and (min-width: 1280px) {
+@media screen and (max-height: 500px) {
   .splash__logo {
-    width: 13.125rem;
+    width: 8rem;
   }
 }
 .splash__comingsoon {
-  width: 29vw;
+  width: 30vw;
   min-width: 20rem;
+}
+@media screen and (min-width: 768px) {
+  .splash__comingsoon {
+    min-width: 25rem;
+  }
+}
+@media screen and (max-height: 500px) {
+  .splash__comingsoon {
+    min-width: 11rem;
+  }
+}
+
+/* TEXT BUBBLE */
+.bubble {
+  background: no-repeat top left/cover url("../assets/TextBlocks.png");
+  aspect-ratio: 1250/320;
+  width: 100%;
+  min-width: 38.75rem;
+  max-width: 38.75rem;
+  padding: 2rem 1.25rem 1.25rem;
+  text-align: center;
+}
+@media screen and (max-height: 500px) {
+  .bubble {
+    min-width: auto;
+    max-width: 29rem;
+    padding: 1.6rem;
+  }
+}
+.bubble__text {
+  white-space: nowrap;
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #D50283;
+}
+@media screen and (max-height: 500px) {
+  .bubble__text {
+    font-size: 0.9rem;
+  }
+}
+
+/* SOCIAL LOGO AREA */
+.social {
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+.social__text {
+  color: white;
+  font-weight: bold;
+  font-size: 0.75rem;
+}
+.social__logos-wrapper {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 1.5625rem;
 }/*# sourceMappingURL=styles.css.map */

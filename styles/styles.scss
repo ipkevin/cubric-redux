@@ -64,9 +64,7 @@ ul {
     height: 1.25rem;
   }
   &__text {
-    color: white;
-    font-weight: bold;
-    font-size: .75rem;
+    @include font-standard;
   }
 }
 
@@ -75,12 +73,19 @@ ul {
   &__wrapper{
     flex: 1 1 auto;
     background-color: $col-background;
-    background-image: url('../assets/Cubric_LoadingScreen_PurpleBottom_opt.jpg');
+    background-image: url('../assets/Cubric_LoadingScreen_PurpleBottom_opt_narrow.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: top center;
 
     position: relative; // sets base when abs positioning content
+
+    @include tablet-query {
+      background-image: url('../assets/Cubric_LoadingScreen_PurpleBottom_opt.jpg');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: top center;
+    }
   }
 
   &__content {
@@ -104,22 +109,83 @@ ul {
 
     /* Container for Bubble & Social */
     &-lower {
+      width: 100%;
+      overflow: hidden; // prevents scrollbar when text bubble image overflows sometimes
 
+      display: flex;
+      flex-flow: column nowrap;
+      justify-content: center;
+      align-items: center;
+      
     }
   }
   /* LOGO */
   &__logo {
     width: 13.125rem;
-    @include desktop-query {
-      width: 13.125rem;
+    @include short-height-query {
+      width: 8rem;
     }
   }
   /* COMING SOON */
   &__comingsoon {
-    width: 29vw; // 27.25rem;
+    width: 30vw; // 27.25rem;
     min-width: 20rem;
-    @include uhd-query {
-    //  width: 49.1875rem;
+    @include tablet-query {
+      min-width: 25rem;
+    }
+    @include short-height-query {
+      min-width: 11rem;
+    }
+      
+  }
+}
+
+/* TEXT BUBBLE */
+.bubble {
+  background: no-repeat top left/cover url('../assets/TextBlocks.png');
+  aspect-ratio: 1250/320; // same AR as image
+  width: 100%;
+  min-width: 38.75rem;
+  max-width: 38.75rem;
+
+  padding: 2rem 1.25rem 1.25rem;
+  text-align: center;
+
+  @include short-height-query {
+    min-width: auto;
+    max-width: 29rem;
+    
+    padding: 1.6rem;
+  }
+
+  &__text {
+    white-space: nowrap;
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #D50283;
+
+    @include short-height-query {
+      font-size: 0.9rem;
     }
   }
+
+}
+
+
+/* SOCIAL LOGO AREA */
+.social {
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  gap: 0.5rem;
+  // background-color: rgba(113, 26, 165, 0.3);
+  &__text {
+    @include font-standard;
+  }
+  &__logos-wrapper {
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 1.5625rem;
+  }
+
 }
