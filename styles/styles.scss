@@ -86,6 +86,11 @@ ul {
       background-repeat: no-repeat;
       background-position: top center;
     }
+    @include short-height-query {
+      background-size: 100%;
+      background-repeat: no-repeat;
+      background-position: top center;
+    }
   }
 
   &__content {

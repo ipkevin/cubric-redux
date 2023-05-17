@@ -84,6 +84,13 @@ ul {
     background-position: top center;
   }
 }
+@media screen and (max-height: 500px) {
+  .splash__wrapper {
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: top center;
+  }
+}
 .splash__content {
   position: absolute;
   top: -1.8rem;
