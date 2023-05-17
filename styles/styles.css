@@ -1,0 +1,54 @@
+@import url("https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,400;0,600;1,400;1,600&display=swap");
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+a {
+  text-decoration: none;
+}
+
+ul {
+  list-style-type: none;
+}
+
+.outer-wrapper {
+  display: flex;
+  flex-flow: column nowrap;
+  height: 100%;
+}
+
+.spacer {
+  flex: 0 1 1.125rem;
+  background-color: black;
+}
+
+.available__wrapper {
+  background-color: #711AA5;
+}
+
+.splash__wrapper {
+  flex: 1 1 auto;
+  background-color: #711AA5;
+  background-image: url("../assets/Cubric_LoadingScreen_PurpleBottom_opt.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.splash__content {
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+  align-items: center;
+  /* LOGO & COMING SOON */
+  /* BUBBLE TEXT & SOCIAL */
+}/*# sourceMappingURL=styles.css.map */

@@ -1,0 +1,17 @@
+@mixin tablet-query {
+  @media screen and (min-width: 768px) {
+    @content;
+  }
+}
+
+@mixin desktop-query {
+  @media screen and (min-width: 1280px) {
+    @content;
+  }
+}
+
+@mixin font($size, $height, $weight) {
+  font-size: $size;
+  line-height: $height;
+  font-weight: $weight;
+}

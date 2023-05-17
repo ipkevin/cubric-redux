@@ -1,0 +1,73 @@
+@use "./partials/colors" as *;
+@use "./partials/variables" as *;
+@use "./partials/fonts";
+@use "./partials/mixins" as *;
+@use "./partials/global" as *;
+
+*{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html, body {
+  // Allows conten's flex container to grow to fill up height
+  // Need both html & body (not just body) to be set to 100% to enable this
+  height: 100%;
+}
+body {
+  font-family: Helvetica, Arial, sans-serif;
+}
+a {
+  text-decoration: none;
+}
+ul {
+  list-style-type: none;
+}
+
+
+.outer-wrapper {
+  display: flex;
+  flex-flow: column nowrap;
+
+  height: 100%;
+}
+
+.spacer {
+  flex: 0 1 1.125rem;
+  background-color: black;
+}
+
+.available {
+  &__wrapper {
+    background-color: $col-background;
+  }
+}
+
+.splash {
+  &__wrapper{
+    flex: 1 1 auto;
+    background-color: $col-background;
+    background-image: url('../assets/Cubric_LoadingScreen_PurpleBottom_opt.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+
+  &__content {
+    
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+    align-items: center;
+
+    /* LOGO & COMING SOON */
+    &-upper {
+
+    }
+
+    /* BUBBLE TEXT & SOCIAL */
+    &-lower {
+
+    }
+  }
+}
