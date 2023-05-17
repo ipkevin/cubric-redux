@@ -28,12 +28,39 @@ ul {
 }
 
 .spacer {
-  flex: 0 1 1.125rem;
+  flex: 0 0 1.125rem;
   background-color: black;
 }
 
-.available__wrapper {
+.available {
   background-color: #711AA5;
+  height: 3.75rem;
+  padding: 0.4375rem;
+}
+@media screen and (min-width: 768px) {
+  .available {
+    padding: 1.125rem;
+  }
+}
+.available__content-wrapper {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+@media screen and (min-width: 768px) {
+  .available__content-wrapper {
+    justify-content: flex-end;
+  }
+}
+.available__logo {
+  height: 1.25rem;
+}
+.available__text {
+  color: white;
+  font-weight: bold;
+  font-size: 0.75rem;
 }
 
 .splash__wrapper {
@@ -42,6 +69,7 @@ ul {
   background-image: url("../assets/Cubric_LoadingScreen_PurpleBottom_opt.jpg");
   background-size: cover;
   background-repeat: no-repeat;
+  background-position: top center;
 }
 .splash__content {
   height: 100%;

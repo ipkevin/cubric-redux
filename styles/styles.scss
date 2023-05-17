@@ -33,16 +33,44 @@ ul {
 }
 
 .spacer {
-  flex: 0 1 1.125rem;
+  flex: 0 0 1.125rem;
   background-color: black;
 }
 
+// "AVAILABLE ON" BAR
 .available {
-  &__wrapper {
     background-color: $col-background;
+    height: 3.75rem;
+
+    padding: .4375rem;
+
+    @include tablet-query {
+      padding: 1.125rem;
+    }
+  // used to ensure items are vertically center
+  &__content-wrapper {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+
+    @include tablet-query {
+      justify-content: flex-end;
+    }
+  }
+
+  &__logo {
+    height: 1.25rem;
+  }
+  &__text {
+    color: white;
+    font-weight: bold;
+    font-size: .75rem;
   }
 }
 
+// SPLASH IMAGE & CONTENT
 .splash {
   &__wrapper{
     flex: 1 1 auto;
@@ -50,6 +78,7 @@ ul {
     background-image: url('../assets/Cubric_LoadingScreen_PurpleBottom_opt.jpg');
     background-size: cover;
     background-repeat: no-repeat;
+    background-position: top center;
   }
 
   &__content {
