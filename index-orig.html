@@ -1,0 +1,279 @@
+<!-- Removing doctype goes into quirks mode which allows them to use clientWidth and height on the document.body element in the JS. 
+Also affects the positioning of bubble text -->
+<!-- <!DOCTYPE html> -->
+
+<html>
+  <head>
+    <title>
+      Cubric Mobile Game
+    </title>
+    <!-- these SEO tags were recommended by: https://moz.com/learn/seo/meta-description -->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name=viewport content="width=device-width, initial-scale=1">
+    <!-- no search engine has used keywords for a long time. But they're here so no one asks why they're missing. -->
+    <meta name="keywords" content="sandbox,3D,avatar,craft,puzzles,roblox,build,world,blocks,multiplayer,friends,coding,minecraft,pkxd">
+    <meta name="description" content="Cubric is a multi-player 3D world builder that offers the freedom to create and explore, leveraging unique furnished blueprints and customizable items.">
+    <link rel="icon" href="./assets/Cubric_favicon_16x16.jpg" type="image/jpg" sizes="16x16">
+    <link rel="icon" href="./assets/Cubric_favicon_32x32.jpg" type="image/jpg" sizes="32x32">
+    <link rel="icon" href="./assets/Cubric_favicon_180x180.jpg" type="image/jpg" sizes="180x180">
+    <link rel="icon" href="./assets/Cubric_favicon_192x192.jpg" type="image/jpg" sizes="192x192">
+    <script src="./assets/jquery.min.js"></script>
+    <script type="text/javascript">
+
+      class UISizeData {
+        docWidth = 0;
+        docHeight = 0;
+        imageAspectRatio = 0.0;
+        docAspectRatio = 0.0;
+        narrowness = 0.0; // the ratio of the doc aspect ratio to the image's
+
+        constructor() {
+          let bgImage = $('#bg-image');
+          this.docWidth = document.body.clientWidth,
+          this.docHeight = document.body.clientHeight;
+        //   this.docWidth = $('html')[0].clientWidth,
+        //   this.docHeight = $('html')[0].clientHeight;
+
+          //alert(this.docWidth + ' x ' + this.docHeight);
+          this.imageAspectRatio = bgImage[0].naturalWidth / bgImage[0].naturalHeight;
+          this.docAspectRatio = (this.docWidth / this.docHeight);
+          this.narrowness = this.docAspectRatio / this.imageAspectRatio;
+        }
+      }
+
+      class OriginatorUIMethods {
+        static onResize() {
+          let uiData = new UISizeData();
+          this.#resizeBGImage(uiData);
+          this.#resizeComingSoonImage(uiData);
+          this.#positionAvailableText(uiData);
+          this.#positionTextBubble(uiData);
+          this.#resizeCubricLogo(uiData);
+          this.#verticallyPositionLowerLayout(uiData);
+        }
+
+        static #resizeBGImage(uiData) {
+          let image = $('#bg-image');
+          if(uiData.docAspectRatio > uiData.imageAspectRatio) {
+            // the viewport is too wide; we fill its width and then cut off the bottom of the image
+            image.width(uiData.docWidth);
+            image.height(uiData.docWidth / uiData.imageAspectRatio);  
+                // kev: So above height just ensures img keeps AR using the new width;
+                // NB that abs pos elems do not affect height of page cuz out of flow! so nothing is explicitly cutting img height. It's just that know btm of img will be off page when made same width as the page since img has a 'taller' AR
+            image[0].style.left = 0;
+          } else {
+            // the viewport is too narrow; we fill its height and then position the image horizontally based
+            // on trying to keep the girl in the frame. We scale the BG image down slightly as the layout
+            // gets scrunched
+            let narrownessScalar = (uiData.narrowness * 0.6) + 0.4;  
+                /* kev: narrowness <= 1 since it's doc AR / image AR and we are in condition where we know docAR <= imgAR
+                // This also means narrownessScalar always <= 1 since narrowness is <= 1 then we *0.6 then +0.4.  So it will be max 1.0.
+                */
+            if(narrownessScalar < 0.7)
+              narrownessScalar = 0.7;
+
+            let newImageWidth = uiData.docHeight * uiData.imageAspectRatio; 
+                /* kev: initial val sets img width to maintain AR assuming img is height of doc
+                * NB: Above means newImageWidth >= docWidth since it's saying assume image is docHeight then use img AR to calc width, and we are in condition where img AR >= doc AR. Therefore, width must be wider if height is same.
+                */
+            
+            /* kev: Below basically seems to be finding the smaller of the values that are still bigger than doc width
+            // we know from previous line that newImageWidth is def >= docWidth
+            */
+            if(newImageWidth * narrownessScalar >= uiData.docWidth) {
+              image.height(uiData.docHeight * narrownessScalar);
+              image.width(newImageWidth * narrownessScalar);
+            } else {
+              image.height(uiData.docHeight);
+              image.width(newImageWidth);
+            }
+
+            /* 
+            * kev: from above, we know image.width >= docWidth, so cutOffWidth always >= 0
+            */
+            let cutOffWidth = image.width() - uiData.docWidth;
+            // we horizontally position the image to keep the girl in the frame
+            image[0].style.left = cutOffWidth * -0.2;
+            // we vertically position the image so that the girl's face mostly slides below the "coming soon"
+            image[0].style.top = (narrownessScalar * -260) + 260;
+          }
+        }
+
+        static #resizeComingSoonImage(uiData) {
+          let narrownessScalar = (uiData.narrowness * 0.6) + 0.4; // kev: >1 when doc AR > img AR, <= 1 otherwise
+          if(narrownessScalar < 0.7)
+            narrownessScalar = 0.7;
+          let verticalScrunchFactor = (uiData.docHeight / 800);
+          let phoneLandscapeScrunchFactor = 1;
+          if(uiData.docHeight < 600) {
+            // Kev: So below eqn = doc AR * (some val >= 0 and < 1)
+            // basically if docHeight is short (under 600px), then this reduces the doc AR to some fraction of orig
+            // then that is used to calc PhoneLSSFact which is still always 1 or higher.
+            // then PhoneLSSFact is used as denominator at end of fxn. Since it's >= 1, then quotient always going to be <= numerator (vertSFact)
+            // The bigger the docHeight is, the smaller the PhoneLandSScrunchfactor will be. Makes sense since PLSSFactor is use as denom when set image width. So as page grows, denom in calc is smaller & shrinks things less, which is what u want when u have more space.
+            // QUESTION: Why do we use the doc AR to help calc the PLSSF in the first place?  What's the significance?
+            phoneLandscapeScrunchFactor = (uiData.docWidth / uiData.docHeight) * ((uiData.docHeight / -600) + 1);
+            if(phoneLandscapeScrunchFactor < 1)
+              phoneLandscapeScrunchFactor = 1;
+          }
+          // coming soon img is intrinsically 872x438
+          $('#coming-soon-image')[0].style.width = (436 * narrownessScalar * verticalScrunchFactor / phoneLandscapeScrunchFactor);
+        }
+
+        static #resizeCubricLogo(uiData) {
+          let verticalScrunchFactor = (uiData.docHeight / 800);
+          if(verticalScrunchFactor > 1)
+            verticalScrunchFactor = 1;
+          let logo = $('#cubric-logo')[0];
+          logo.style.width = (210 * verticalScrunchFactor);
+          let topMargin = 30 + (verticalScrunchFactor * -20) + 20;
+          logo.style.margin = topMargin + 'px auto 0 auto';
+        }
+
+        static #positionTextBubble(uiData) {
+          let bubbleImage = $('#text-bubble-image')[0];
+          let horizontalScrunchFactor = (uiData.docWidth / 450);
+          if(horizontalScrunchFactor > 1)
+            horizontalScrunchFactor = 1;
+          let verticalScrunchFactor = (uiData.docHeight / 600);
+          if(verticalScrunchFactor > 1)
+            verticalScrunchFactor = 1;
+          let newImageWidth = 620 * horizontalScrunchFactor * verticalScrunchFactor;
+          bubbleImage.style.width = newImageWidth;
+          let bubbleWrapper = $('#text-bubble')[0];
+          bubbleWrapper.style.left = (uiData.docWidth - newImageWidth) / 2;
+          let mainText = $('#main-text')[0];
+          mainText.style.fontSize = 20 * horizontalScrunchFactor * verticalScrunchFactor + 'px';
+        }
+
+        static #verticallyPositionLowerLayout(uiData) {
+          let verticalScrunchFactor = (uiData.docHeight / 900);
+          if(verticalScrunchFactor > 1)
+            verticalScrunchFactor = 1;
+          let bubbleWrapper = $('#text-bubble')[0];
+          bubbleWrapper.style.top = (verticalScrunchFactor * -150) + 150;
+          let socialLinks = $('#social-links')[0];
+          socialLinks.style.height = 105 * (verticalScrunchFactor + (1 - verticalScrunchFactor) / 2);
+        }
+
+        static #positionAvailableText(uiData) {
+          let wrapper = $('#available-wrapper')[0];
+          let text = $('#available-text')[0];
+          if(uiData.docWidth < uiData.docHeight) {
+            wrapper.style.textAlign = 'center';
+            text.style.margin = '7px';
+          } else {
+            wrapper.style.textAlign = 'right';
+            text.style.margin = '18px';
+          }
+        }
+      }
+
+      window.onload = (event) => {
+        OriginatorUIMethods.onResize();
+      };
+      window.onresize = (event) => {
+        OriginatorUIMethods.onResize();
+        console.log("innerwidth: "+window.innerWidth);
+        console.log("doc.body.clientwidth: "+ document.body.clientWidth);
+        console.log("html[0].clientwidth: "+$("html")[0].clientWidth);
+        console.log("document.documentElement.clientWidth (ie <html> elem): "+document.documentElement.clientWidth);
+        console.log("doc.body.clientHeight: "+ document.body.clientHeight);
+        console.log("html[0].clientHeight: "+$("html")[0].clientHeight);
+        
+        console.log("size of bgimage using width: "+$('#bg-image')[0].width);
+        console.log("size of bgimage using naturalWidth: "+$('#bg-image')[0].naturalWidth);
+        console.log("size of bgimage using height: "+$('#bg-image')[0].height);
+    };
+    </script>
+    <style>
+      .page-positioner {
+        display: block;
+        position: absolute;
+        left: 0px;
+        width: 100%;
+        margin: 0px;
+        padding: 0px;
+      }
+
+      .available-text {
+        color: white;
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 12px;
+        font-weight: bold;
+      }
+
+      .main-text {
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 20px;
+        font-weight: bold;
+        color: #D50283;
+      }
+
+      .look-for-us-text {
+         font-family: Helvetica, Arial, sans-serif;
+         font-size: 12px;
+         font-weight: bold;
+         color: white;
+         line-height: 200%;
+      }
+    </style>
+   
+  </head>
+  <body style="background-color: black; padding: 0px; margin: 0px; overflow: hidden;">
+    <!-- this div is here to provide a purple background to the page, which will show below the BG image
+    on narrow layouts. We don't do this by setting the color of the body element because that will show
+    above the black band at the top of the page, in the area at the top of the screen with curved corners. -->
+    <div class="page-positioner" style="height: 100%; background-color: #711AA5;">
+      &nbsp;
+    </div>
+    <img id="bg-image" src="./assets/Cubric_LoadingScreen_PurpleBottom_opt.jpg" style="position: absolute;">
+    <div class="page-positioner" style="background-color: black; height: 18px;">
+      &nbsp;
+    </div>
+    <div id="asdf" class="page-positioner" style="height: 60px; background-color: #711AA5; top: 18px;">
+      <img id="cubric-logo" src="./assets/Cubric_Logo_web.png" style="display: block; margin: 30px auto 0 auto; width: 210px;">
+      <img id="coming-soon-image" src="./assets/ComingSoon.png" style="display: block; margin: 10px auto 0 auto; width: 436px;">
+    </div>
+    <!-- the available-wrapper's job is to provide the purple band and alignment of its contents. -->
+    <div id="available-wrapper" class="page-positioner" style="height: 60px; text-align: right; top: 18px;">
+      <div id="available-text" style="margin: 18px;">
+        <span class="available-text" style="vertical-align: middle;">
+          Available soon on
+        </span>
+        <a href="https://apps.apple.com/us/app/id1600377342" target="_blank">
+          <img src="./assets/AppStore.png" style="height: 20px; margin-left: 6px; vertical-align: middle;">
+        </a>
+        <!--<a href="#">-->
+          <img src="./assets/GooglePlay.png" style="height: 20px; margin-left: 6px; vertical-align: middle;">
+        <!--</a>-->
+      </div>
+    </div>
+    <div id="lower-layout" class="page-positioner" style="height: 238px; bottom: 0px;">
+      <div id="text-bubble" style="position: absolute;">
+        <img id="text-bubble-image" src="./assets/TextBlocks.png" style="display: block; margin: 0 auto; width: 620px;">
+        <div id="main-text" class="main-text" style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); text-align: center;">
+          <nobr>We're preparing something exciting.</nobr><br>
+          <nobr>Prepare to unleash YOUR creativity.</nobr>
+          <br><br>&nbsp;
+        </div>
+      </div>
+      <div id="social-links" class="page-positioner look-for-us-text" style="bottom: 0px; height: 105px; text-align: center;">
+        look for us on<br>
+        <a href="https://www.youtube.com/channel/UCpkHeyWGwAUI475fCwRtTPA" target="_blank">
+          <img src="./assets/logo-youtube.png" style="width: 32px; margin-right: 25px;">
+        </a>
+        <a href="https://www.facebook.com/Cubric-Mobile-Game-114709418199389" target="_blank">
+          <img src="./assets/logo-facebook.png" style="width: 28px; margin-right: 25px;">
+        </a>
+        <a href="https://www.instagram.com/cubric_mobile_game/" target="_blank">
+          <img src="./assets/logo-instagram.png" style="width: 28px;">
+        </a>
+      </div>
+    </div>
+
+
+    
+   
+  </body>
+</html>
